@@ -7,35 +7,6 @@ const parseCode = (codeToParse, loc) => {
     return parsedCode;
 };
 
-const parseJson = (jsonToParse) => {
-    let ans;
-
-    if (!jsonToParse)
-        return jsonToParse;
-
-    switch (jsonToParse.type) {
-    case 'Literal': ans = literal(jsonToParse); break;
-    case 'Identifier': ans = identifier(jsonToParse); break;
-    case 'BinaryExpression': ans = generate(jsonToParse); break;
-    case 'UnaryExpression': ans = generate(jsonToParse); break;
-    case 'VariableDeclarator': ans = variableDeclarator(jsonToParse); break;
-    case 'ReturnStatement': ans = returnStmt(jsonToParse); break;
-    case 'MemberExpression': ans = generate(jsonToParse); break;
-    case 'ExpressionStatement': ans = generate(jsonToParse); break;
-    case 'AssignmentExpression': ans = assignExp(jsonToParse); break;
-    case 'UpdateExpression': ans = generate(jsonToParse); break;
-    case 'FunctionDeclaration': ans = funcDecl(jsonToParse); break;
-    case 'VariableDeclaration': ans = variableDeclaration(jsonToParse); break;
-    case 'BlockStatement': ans = blockStmt(jsonToParse); break;
-    case 'IfStatement': ans = ifStmt(jsonToParse); break;
-    case 'WhileStatement': ans = whileStmt(jsonToParse); break;
-    case 'ForStatement': ans = forStmt(jsonToParse); break;
-    case 'Program': ans = program(jsonToParse); break;
-    }
-
-    return ans;
-};
-
 const mapName = (name) => {
     let names = {
         'VariableDeclarator': 'variable declarator' ,
@@ -141,6 +112,37 @@ const jsonToHtmlTable = (jsonToParse) => {
     parseJson(jsonToParse);
 
     return modelToHtml();
+};
+
+let funcs = {
+    'Literal': literal,
+    'Identifier': identifier,
+    'BinaryExpression': generate,
+    'UnaryExpression': generate,
+    'VariableDeclarator': variableDeclarator,
+    'ReturnStatement': returnStmt,
+    'MemberExpression': generate,
+    'ExpressionStatement': generate,
+    'AssignmentExpression': assignExp,
+    'UpdateExpression': generate,
+    'FunctionDeclaration': funcDecl,
+    'VariableDeclaration': variableDeclaration,
+    'BlockStatement': blockStmt,
+    'IfStatement': ifStmt,
+    'WhileStatement': whileStmt,
+    'ForStatement': forStmt,
+    'Program': program,
+};
+
+const parseJson = (jsonToParse) => {
+    let ans;
+
+    if (!jsonToParse)
+        return jsonToParse;
+
+    ans = funcs[jsonToParse.type](jsonToParse);
+
+    return ans;
 };
 
 export {parseCode, jsonToHtmlTable};
